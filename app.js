@@ -24,7 +24,7 @@ global.routerPath = __dirname;
 global.serverPath = 'http://127.0.0.1:9977/serverImage/';
 
 app.use(require('./router/article_router'));
-// app.use(require('./router/router_userMsg'));
+app.use(require('./router/public_router'));
 // app.use(require('./router/router_backendNav'));
 // app.use(require('./router/router_public'));
 // app.use(require('./router/router_article'));

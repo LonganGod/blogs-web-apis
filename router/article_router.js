@@ -8,8 +8,8 @@ const moment = require('moment');
 article_router
 // 获取文章列表
   .get('/api/article/getArticleList', (req, res) => {
-    let sql1 = `select * from article a, articlecate ac where a.articleCate = ac.cateId order by a.createTime desc`;
-    let sql2 = `select * from article a, articlecate ac where a.articleCate = ac.cateId and ac.cateId = ? order by createTime desc`;
+    let sql1 = `select a.*, ac.cateId, ac.cateName, ai.adminName from article a, articlecate ac, admininfo ai where a.articleCate = ac.cateId and a.adminId = ai.adminId order by a.createTime desc`;
+    let sql2 = `select a.*, ac.cateId, ac.cateName, ai.adminName from article a, articlecate ac, admininfo ai where a.articleCate = ac.cateId and a.adminId = ai.adminId and ac.cateId = ? order by createTime desc`;
     conn.query(req.query.cateId ? sql2 : sql1, [req.query.cateId], (err, result) => {
       if (err) {
         console.log(err);
@@ -24,7 +24,19 @@ article_router
         }
       }
 
-      return res.send({code: 200, message: '数据获取成功', result: newResult});
+      return res.send({code: 200, message: '数据获取成功', result: newResult, total: result.length});
+    })
+  })
+  // 获取文章详情
+  .get('/api/article/getArticleData', (req, res) => {
+    let sql = 'select a.*, ac.cateId, ac.cateName, ai.adminName from article a, articlecate ac, admininfo ai where a.articleCate = ac.cateId and a.adminId = ai.adminId and a.articleId = ?'
+    conn.query(sql, [req.query.articleId], (err, result) => {
+      if (err) {
+        console.log(err)
+        return res.send({code: 201, message: '获取数据失败'})
+      }
+
+      return res.send({code: 201, message: '获取数据成功', result: result[0]})
     })
   })
 
